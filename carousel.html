@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>轮播图</title>
+    <style type="text/css">
+        html,body,ul,li,p{
+            margin:0;
+            padding:0;
+        }
+        li{
+            list-style: none;
+        }
+        a{
+            text-decoration: none;
+        }
+        .carousel{
+            position: relative;
+            width: 420px;
+            height: 280px;
+            overflow: hidden;
+            margin: 50px auto;
+        }
+        .carousel .img-ct{
+            position: absolute;
+            overflow: hidden;
+        }
+        .carousel .img-ct img{
+            width:420px;
+            height:280px;
+        }
+        .carousel .img-ct>li{
+         float: left;
+        }
+        .carousel .arrow{
+            position: absolute;
+            top:50%;
+            margin-top: -15px;
+            width: 30px;
+            height: 30px;
+            color: #ffffff;
+            display: inline-block;
+            border-radius: 50%;
+            border: 1px solid #ffffff;
+            line-height: 30px;
+            text-align: center;
+            text-decoration: none;
+        }
+        .carousel .arrow:hover{
+            opacity: 0.7;
+        }
+        .carousel .pre{
+            left: 10px;
+        }
+        .carousel .next{
+            right:10px;
+        }
+        .carousel .bullet{
+            position: absolute;
+            bottom:10px;
+            width:100%;
+            text-align: center;
+        }
+        .carousel .bullet>li {
+            display: inline-block;
+            width:30px;
+            height: 5px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+        .carousel .bullet>li.active{
+            background-color: #cccccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel">
+        <ul class="img-ct">
+            <li><a href="#"><img src="images/img1.jpg"></a></li>
+            <li><a href="#"><img src="images/img2.jpg"></a></li>
+            <li><a href="#"><img src="images/img3.jpg"></a></li>
+            <li><a href="#"><img src="images/img4.jpg"></a></li>
+        </ul>
+        <a class="pre arrow" href="#"> < </a>
+        <a class="next arrow" href="#"> > </a>
+        <ul class="bullet">
+            <li class="active"></li>
+            <li></li>
+            <li></li>
+            <li></li>
+        </ul>
+    </div>
+
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script>
+        var $imgCt = $(".img-ct")
+        var $imgs = $(".carousel .img-ct>li")
+        var $preBtn = $(".carousel .pre")
+        var $nextBtn = $(".carousel .next")
+        var $bullets = $(".carousel .bullet>li")
+
+        var pagIndex = 0
+
+        var imgCount = $imgs.length
+        var imgwidth = $imgs.width()
+        $imgCt.append($imgs.first().clone())
+        $imgCt.prepend($imgs.last().clone())
+        $imgCt.width((imgCount+2) * imgwidth)
+        $imgCt.css({left:-imgwidth})
+
+        $preBtn.click(function () {
+            playPre()
+        })
+        $nextBtn.click(function () {
+            playNext()
+        })
+
+        function playNext() {
+            $imgCt.animate({
+                left:"-="+imgwidth
+            },function () {
+                pagIndex++
+                if(pagIndex === imgCount){
+                    pagIndex = 0
+                    $imgCt.css({left: -imgwidth})
+                }
+                setBullet()
+            })
+        }
+        function playPre() {
+            $imgCt.animate({
+                left:"+="+imgwidth
+            },function () {
+                pagIndex--
+                if(pagIndex<0){
+                    pagIndex = imgCount -1
+                    $imgCt.css({left:-imgwidth*imgCount})
+                }
+                setBullet()
+            })
+        }
+
+        function setBullet() {
+            $bullets.removeClass("active")
+                .eq(pagIndex)
+                .addClass("active")
+        }
+
+
+
+
+    </script>
+</body>
+</html>
