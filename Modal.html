@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Modal 组件</title>
+	<style type="text/css">
+	a{
+	  text-decoration: none;
+	  color: #000;
+	}
+	.cover{
+	  position: fixed;
+	  top: 0;
+	  left: 0;
+	  right: 0;
+	  bottom: 0;
+	  z-index: 100;
+	  background-color: #000;
+	  opacity: 0.3;
+	}
+	.modal .modal-ct{
+	  position: fixed;
+	  top: 50%;
+	  left: 50%;
+	  width: 350px;
+	  transform: translate(-50%, -50%);
+	  -webkit-transform: translate(-50%, -50%);
+	  z-index: 101;
+	  background-color: #fff;
+	  border-radius: 3px;
+	  overflow: hidden;
+	}
+	.modal-ct .title{
+	  position: relative;
+	  background-color: #eee;
+	}
+	.modal-ct .title h3{
+	  padding: 10px;
+	  margin: 0;
+	  font-size: 16px;
+	}
+	.modal-ct .title .close{
+	  position: absolute;
+	  right: 10px;
+	  top: 10px;
+	  font-size: 16px;
+	  text-decoration: none;
+	  color: #333;
+	}
+	.modal-ct .content{
+	  padding: 10px;
+	}
+	.modal-ct .footer{
+	  padding: 20px;
+	}
+	.modal-ct .footer .close{
+	  font-size: 16px;
+	  text-decoration: none;
+	  color: #333;
+	}
+	</style>
+
+</head>
+<body>
+	<button id="open1">打开1</button>
+  	<button id="open2">打开2</button>
+  	<button id="open3">打开3</button>
+  	<button id="open4">打开4</button>
+  	<button id="open5">打开5</button>
+  	<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+  	<script type="text/javascript">
+  		$(function() {
+  var Dialog = (function() {
+    function Modal() {
+      this.createDialog();
+      this.bindEvent();
+    }
+    Modal.prototype = {
+      defaultOption: {
+        title: '',
+        message: '',
+        isShowCloseBtn: true,
+        isShowConfirmBtn: false,
+        onClose: function() {},
+        onConfirm: function() {}
+      },
+      open: function(option) {
+        this.setOption(option);
+        this.setDialog();
+        this.showDialog();
+      },
+      close: function() {
+        this.hideDialog();
+      },
+      setOption: function(option) {
+        if (typeof option === 'string') {
+          this.option = $.extend({}, this.defaultOption, {
+            message: option
+          });
+        } else if (typeof option === 'object') {
+          this.option = $.extend({}, this.defaultOption, option);
+        }
+      },
+      bindEvent: function() {
+        var me = this,
+          $close = me.$dialog.find('.close'),
+          $confirm = me.$dialog.find('.confirm');
+        $close.on('click', function(event) {
+          event.preventDefault();
+          me.option.onClose();
+          me.hideDialog();
+        });
+        $confirm.on('click', function(event) {
+          event.preventDefault();
+          me.option.onConfirm();
+          me.hideDialog();
+        });
+      },
+      createDialog: function() {
+        var tpl = '<div class="modal" style="display: none">\
+                    <div class="cover"></div>\
+                    <div class="modal-ct">\
+                      <div class="title">\
+                        <h3>我是标题</h3>\
+                        <a href="#" class="close">\×</a>\
+                      </div>\
+                      <div class="content"></div>\
+                      <div class="footer">\
+                        <a href="#" class="confirm">确定</a>\
+                        <a href="#" class="close">取消</a>\
+                      </div>\
+                    </div>\
+                  </div>';
+        this.$dialog = $(tpl);
+        $('body').append(this.$dialog);
+      },
+      setDialog: function() {
+        var me = this,
+          $dialog = me.$dialog,
+          option = me.option,
+          $title = $dialog.find('.title'),
+          $close = $dialog.find('.footer .close'),
+          $confirm = $dialog.find('.confirm'),
+          func = ['show', 'hide'],
+          h3 = $dialog.find('.title h3'),
+          $content = $dialog.find('.content');
+        $title[func[option.title ? 0 : 1]]();
+        $close[func[option.close ? 1 : 0]]();
+        $confirm[func[option.confirm ? 1 : 0]]();
+        h3.text(option.title);
+        $content.html(option.message);
+      },
+      showDialog: function() {
+        this.$dialog.show();
+      },
+      hideDialog: function() {
+        this.$dialog.hide();
+      }
+    };
+    return new Modal();
+  })();
+
+  $('#open1').on('click', function() {
+    Dialog.open('hello, 欢迎光临');
+  });
+  $('#open2').on('click', function() {
+    Dialog.open('<a href="#">百事可乐</a>');
+  });
+  $('#open3').on('click', function() {
+    Dialog.open({
+      title: '欢迎光临',
+      message: 'hello',
+      isShowCloseBtn: true,
+      isShowConfirmBtn: true,
+      onClose: function() {
+        alert('close');
+      },
+      onConfirm: function() {
+        alert('确定');
+      }
+    });
+  });
+  var tpl = '<ul><li>列表1</li><li>列表2</li><li>列表1</li><li>列表1</li></ul>';
+  $('#open4').on('click', function() {
+    Dialog.open({
+      title: '欢迎光临',
+      message: tpl,
+      isShowCloseBtn: true,
+      isShowConfirmBtn: true,
+      onClose: function() {
+        alert('close');
+      },
+      onConfirm: function() {
+        alert('确定');
+      }
+    });
+  });
+  $('#open5').on('click', function() {
+    Dialog.open({
+      title: '欢迎光临',
+      message: 'hello',
+      isShowCloseBtn: false,
+      isShowConfirmBtn: false
+    });
+  });
+});
+  	</script>
+</body>
+</html>
